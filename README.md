@@ -181,6 +181,28 @@ Ollama: ONLINE
 ```
 http://localhost:8080
 ```
+---
+
+## Live Demo
+
+🌐 **Public Demo**
+
+https://taps-chaps-fancy.ngrok-free.dev
+
+> This project is publicly accessible through Ngrok and demonstrates real-time vector search, HNSW indexing, semantic retrieval, and Ollama-powered RAG. The demo may be unavailable when the host machine is offline.
+
+---
+
+## Docker Support
+
+The application can be containerized using Docker for simplified deployment and reproducible environments.
+
+```bash
+docker build -t vectordb .
+docker run -p 8080:8080 vectordb
+```
+
+> Note: RAG features require Ollama with `nomic-embed-text` and `llama3.2` installed and running.
 
 ---
 
