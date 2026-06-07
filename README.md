@@ -5,7 +5,6 @@ Implements **HNSW**, **KD-Tree**, and **Brute Force** search algorithms side-by-
 
 > Built as a production-inspired vector database demonstrating approximate nearest neighbor search, semantic retrieval, and Retrieval-Augmented Generation (RAG) using modern vector indexing techniques.
 
----
 
 ## What This Project Does
 
