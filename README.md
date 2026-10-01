@@ -130,7 +130,7 @@ You should see both models listed.
 Open **PowerShell** and run:
 
 ```powershell
-git clone https://github.com/YOUR_USERNAME/VectorDB.git
+git clone https://github.com/tejaswi75/VectorDB.git
 cd VectorDB
 ```
 
