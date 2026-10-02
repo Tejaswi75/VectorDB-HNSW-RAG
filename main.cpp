@@ -15,6 +15,7 @@
 #include <functional>
 #include <fstream>
 #include <climits>
+#include <cstdlib>
 
 static const int DIMS = 16;   // demo vectors
 // Doc embeddings dimension is determined at runtime from Ollama's model output
@@ -779,7 +780,9 @@ void loadDemo(VectorDB& db) {
 int main() {
     VectorDB   db(DIMS);
     DocumentDB docDB;
-    OllamaClient ollama;
+    const char* oh = std::getenv("VECTORDB_OLLAMA_HOST");
+    const char* op = std::getenv("VECTORDB_OLLAMA_PORT");
+    OllamaClient ollama(oh ? oh : "127.0.0.1", op ? std::atoi(op) : 11434);
 
     loadDemo(db);
 

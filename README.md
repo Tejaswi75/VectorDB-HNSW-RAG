@@ -5,7 +5,7 @@ Implements **HNSW**, **KD-Tree**, and **Brute Force** search algorithms side-by-
 
 > Built as a production-inspired vector database demonstrating approximate nearest neighbor search, semantic retrieval, and Retrieval-Augmented Generation (RAG) using modern vector indexing techniques.
 
-🔗 **Repository:** [github.com/tejaswi75/VectorDB](https://github.com/tejaswi75/VectorDB) · 🌐 **Live Demo:** [taps-chaps-fancy.ngrok-free.dev](https://taps-chaps-fancy.ngrok-free.dev)
+🔗 **Repository:** [github.com/Tejaswi75/VectorDB-HNSW-RAG](https://github.com/Tejaswi75/VectorDB-HNSW-RAG) · 🌐 **Live Demo:** [taps-chaps-fancy.ngrok-free.dev](https://taps-chaps-fancy.ngrok-free.dev)
 
 ## What This Project Does
 
@@ -131,15 +131,15 @@ You should see both models listed.
 Open **PowerShell** and run:
 
 ```powershell
-git clone https://github.com/tejaswi75/VectorDB.git
-cd VectorDB
+git clone https://github.com/Tejaswi75/VectorDB-HNSW-RAG.git
+cd VectorDB-HNSW-RAG
 ```
 
 ---
 
 ### Step 5 — Compile the C++ Server
 
-Inside the `VectorDB` folder, run:
+Inside the `VectorDB-HNSW-RAG` folder, run:
 
 ```powershell
 g++ -std=c++17 -O2 main.cpp -o db -lws2_32
@@ -151,6 +151,16 @@ This produces `db.exe`. It takes about 10–20 seconds.
 > - `g++: command not found` → MSYS2 not in PATH, redo [Step 1](#step-1--install-msys2-c-compiler) point 5
 > - `undefined reference to WSA...` → missing `-lws2_32` flag, add it
 > - Takes too long? Remove `-O2` for a faster compile (but a slower executable)
+
+#### macOS / Linux
+
+No MSYS2 needed. On macOS install the compiler with `xcode-select --install`, then run:
+
+```bash
+g++ -std=c++17 -O2 main.cpp -o db -pthread
+```
+
+This produces `db`. The `-lws2_32` flag is Windows-only.
 
 ---
 
@@ -196,6 +206,19 @@ The application can be containerized using [Docker](https://docs.docker.com/get-
 docker build -t vectordb .
 docker run -p 8080:8080 vectordb
 ```
+
+To use the RAG features from inside Docker, keep Ollama running on your machine and point the container at it:
+
+```bash
+docker run -p 8080:8080 -e VECTORDB_OLLAMA_HOST=host.docker.internal vectordb
+```
+
+On Linux, also add `--add-host=host.docker.internal:host-gateway`.
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `VECTORDB_OLLAMA_HOST` | `127.0.0.1` | Host where Ollama is running |
+| `VECTORDB_OLLAMA_PORT` | `11434` | Ollama port |
 
 > Note: RAG features require [Ollama](https://ollama.com) with `nomic-embed-text` and `llama3.2` installed and running.
 
@@ -286,16 +309,18 @@ curl -X POST http://localhost:8080/doc/ask `
 ## Project Structure
 
 ```
-VectorDB/
+VectorDB-HNSW-RAG/
 ├── main.cpp        ← C++ backend (HNSW, KD-Tree, BruteForce, REST API, RAG)
 ├── httplib.h       ← Single-header HTTP server library (cpp-httplib)
 ├── index.html      ← Frontend (PCA scatter plot, chat UI, benchmark)
+├── Dockerfile      ← Container build
 └── README.md       ← This file
 ```
 
 - [`main.cpp`](main.cpp) — backend
 - [`httplib.h`](httplib.h) — from [yhirose/cpp-httplib](https://github.com/yhirose/cpp-httplib) (MIT)
 - [`index.html`](index.html) — frontend
+- [`Dockerfile`](Dockerfile) — container build
 
 ### Architecture ([main.cpp](main.cpp))
 
