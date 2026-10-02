@@ -1,22 +1,23 @@
 # VectorDB — Build a Vector Database from Scratch in C++
 
 A fully working **Vector Database** built from scratch in C++ with a web UI.  
-Implements **HNSW**, **KD-Tree**, and **Brute Force** search algorithms side-by-side, plus a **RAG pipeline** powered by a local LLM via Ollama.
+Implements **HNSW**, **KD-Tree**, and **Brute Force** search algorithms side-by-side, plus a **RAG pipeline** powered by a local LLM via [Ollama](https://ollama.com).
 
 > Built as a production-inspired vector database demonstrating approximate nearest neighbor search, semantic retrieval, and Retrieval-Augmented Generation (RAG) using modern vector indexing techniques.
 
+🔗 **Repository:** [github.com/tejaswi75/VectorDB](https://github.com/tejaswi75/VectorDB) · 🌐 **Live Demo:** [taps-chaps-fancy.ngrok-free.dev](https://taps-chaps-fancy.ngrok-free.dev)
 
 ## What This Project Does
 
 | Feature | Description |
 |---|---|
-| **3 Search Algorithms** | HNSW (production-grade), KD-Tree, Brute Force — run all three and compare speed |
-| **3 Distance Metrics** | Cosine similarity, Euclidean distance, Manhattan distance |
+| **3 Search Algorithms** | [HNSW](#hnsw-hierarchical-navigable-small-world) (production-grade), [KD-Tree](#kd-tree-k-dimensional-tree), Brute Force — run all three and compare speed |
+| **3 Distance Metrics** | [Cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity), [Euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance), [Manhattan distance](https://en.wikipedia.org/wiki/Taxicab_geometry) |
 | **16D Demo Vectors** | 20 pre-loaded semantic vectors across 4 categories (CS, Math, Food, Sports) |
-| **2D PCA Scatter Plot** | Live visualization of semantic space — watch clusters form |
-| **Real Document Embedding** | Paste any text → Ollama embeds it with `nomic-embed-text` (768D) |
-| **RAG Pipeline** | Ask questions about your documents → HNSW retrieves context → local LLM answers |
-| **Full REST API** | CRUD endpoints: insert, delete, search, benchmark, hnsw-info |
+| **2D PCA Scatter Plot** | Live visualization of semantic space using [PCA](https://en.wikipedia.org/wiki/Principal_component_analysis) — watch clusters form |
+| **Real Document Embedding** | Paste any text → Ollama embeds it with [`nomic-embed-text`](https://ollama.com/library/nomic-embed-text) (768D) |
+| **RAG Pipeline** | Ask questions about your documents → HNSW retrieves context → local LLM ([`llama3.2`](https://ollama.com/library/llama3.2)) answers |
+| **Full REST API** | CRUD endpoints: insert, delete, search, benchmark, hnsw-info — see [REST API Reference](#rest-api-reference) |
 
 ---
 
@@ -41,7 +42,7 @@ Ollama (llama3.2)                  ← reads retrieved chunks, generates an answ
 Answer
 ```
 
-**HNSW (Hierarchical Navigable Small World)** is the same algorithm used by Pinecone, Weaviate, Chroma, and Milvus. It builds a multilayer graph where each layer is progressively sparser — searches start at the top layer and zoom in, achieving O(log N) complexity instead of O(N) for brute force.
+**HNSW (Hierarchical Navigable Small World)** ([Malkov & Yashunin, 2016](https://arxiv.org/abs/1603.09320)) is the same family of algorithm used by [Pinecone](https://www.pinecone.io), [Weaviate](https://weaviate.io), [Chroma](https://www.trychroma.com), and [Milvus](https://milvus.io). It builds a multilayer graph where each layer is progressively sparser — searches start at the top layer and zoom in, achieving roughly O(log N) complexity instead of O(N) for brute force.
 
 ---
 
@@ -49,9 +50,9 @@ Answer
 
 You need **3 things** installed on your Windows laptop:
 
-1. **MSYS2** (gives you g++ compiler)
-2. **Git**
-3. **Ollama** (runs the local AI models)
+1. **[MSYS2](https://www.msys2.org)** (gives you the g++ compiler)
+2. **[Git](https://git-scm.com/download/win)**
+3. **[Ollama](https://ollama.com/download)** (runs the local AI models)
 
 ---
 
@@ -59,7 +60,7 @@ You need **3 things** installed on your Windows laptop:
 
 ### Step 1 — Install MSYS2 (C++ Compiler)
 
-1. Go to **https://www.msys2.org** and download the installer
+1. Go to **[msys2.org](https://www.msys2.org)** and download the installer
 2. Run the installer, keep default path (`C:\msys64`)
 3. After install, open **MSYS2 UCRT64** from Start Menu (the orange icon)
 4. Run these commands inside the MSYS2 terminal:
@@ -89,7 +90,7 @@ pacman -S mingw-w64-ucrt-x86_64-gcc
 
 ### Step 2 — Install Git
 
-1. Go to **https://git-scm.com/download/win** and download Git for Windows
+1. Go to **[git-scm.com/download/win](https://git-scm.com/download/win)** and download Git for Windows
 2. Run the installer with default settings
 3. Verify in PowerShell:
 ```
@@ -100,7 +101,7 @@ git --version
 
 ### Step 3 — Install Ollama (Local AI Models)
 
-1. Go to **https://ollama.com** and click **Download for Windows**
+1. Go to **[ollama.com/download](https://ollama.com/download)** and click **Download for Windows**
 2. Run the installer
 3. Ollama starts automatically in the system tray
 4. Open **PowerShell** and pull the two required models:
@@ -108,12 +109,12 @@ git --version
 ```powershell
 ollama pull nomic-embed-text
 ```
-*(~274 MB — this is the embedding model)*
+*(~274 MB — this is the [embedding model](https://ollama.com/library/nomic-embed-text))*
 
 ```powershell
 ollama pull llama3.2
 ```
-*(~2 GB — this is the language model)*
+*(~2 GB — this is the [language model](https://ollama.com/library/llama3.2))*
 
 5. Verify Ollama is running:
 ```powershell
@@ -134,8 +135,6 @@ git clone https://github.com/tejaswi75/VectorDB.git
 cd VectorDB
 ```
 
-*(Replace `YOUR_USERNAME` with the actual GitHub username)*
-
 ---
 
 ### Step 5 — Compile the C++ Server
@@ -149,9 +148,9 @@ g++ -std=c++17 -O2 main.cpp -o db -lws2_32
 This produces `db.exe`. It takes about 10–20 seconds.
 
 > **Troubleshooting:**
-> - `g++: command not found` → MSYS2 not in PATH, redo Step 1 point 5
+> - `g++: command not found` → MSYS2 not in PATH, redo [Step 1](#step-1--install-msys2-c-compiler) point 5
 > - `undefined reference to WSA...` → missing `-lws2_32` flag, add it
-> - Takes too long? Remove `-O2` for faster (but slower executable) compile
+> - Takes too long? Remove `-O2` for a faster compile (but a slower executable)
 
 ---
 
@@ -177,32 +176,28 @@ Ollama: ONLINE
   embed model: nomic-embed-text  gen model: llama3.2
 ```
 
-**Open your browser** and go to:
-```
-http://localhost:8080
-```
+**Open your browser** and go to: [http://localhost:8080](http://localhost:8080)
+
 ---
 
 ## Live Demo
 
-🌐 **Public Demo**
+🌐 **Public Demo:** [https://taps-chaps-fancy.ngrok-free.dev](https://taps-chaps-fancy.ngrok-free.dev)
 
-https://taps-chaps-fancy.ngrok-free.dev
-
-> This project is publicly accessible through Ngrok and demonstrates real-time vector search, HNSW indexing, semantic retrieval, and Ollama-powered RAG. The demo may be unavailable when the host machine is offline.
+> This project is publicly accessible through [ngrok](https://ngrok.com) and demonstrates real-time vector search, HNSW indexing, semantic retrieval, and Ollama-powered RAG. The demo may be unavailable when the host machine is offline.
 
 ---
 
 ## Docker Support
 
-The application can be containerized using Docker for simplified deployment and reproducible environments.
+The application can be containerized using [Docker](https://docs.docker.com/get-docker/) for simplified deployment and reproducible environments.
 
 ```bash
 docker build -t vectordb .
 docker run -p 8080:8080 vectordb
 ```
 
-> Note: RAG features require Ollama with `nomic-embed-text` and `llama3.2` installed and running.
+> Note: RAG features require [Ollama](https://ollama.com) with `nomic-embed-text` and `llama3.2` installed and running.
 
 ---
 
@@ -230,7 +225,7 @@ This uses Ollama to generate **real 768-dimensional embeddings** from any text.
 
 ### Tab 3: Ask AI (RAG Pipeline)
 
-1. Make sure you have inserted some documents in Tab 2 first
+1. Make sure you have inserted some documents in [Tab 2](#tab-2-documents-real-embeddings) first
 2. Type a question about your documents
 3. Click **🤖 ASK AI**
 
@@ -298,7 +293,11 @@ VectorDB/
 └── README.md       ← This file
 ```
 
-### Architecture (main.cpp)
+- [`main.cpp`](main.cpp) — backend
+- [`httplib.h`](httplib.h) — from [yhirose/cpp-httplib](https://github.com/yhirose/cpp-httplib) (MIT)
+- [`index.html`](index.html) — frontend
+
+### Architecture ([main.cpp](main.cpp))
 
 ```
 BruteForce          O(N·d)      Exact, baseline
@@ -310,11 +309,15 @@ DocumentDB          HNSW-only index for real Ollama embeddings (768D)
 OllamaClient        HTTP client → /api/embeddings + /api/generate
 ```
 
+See the [Ollama API docs](https://github.com/ollama/ollama/blob/main/docs/api.md) for the `/api/embeddings` and `/api/generate` endpoints.
+
 ---
 
 ## Algorithm Deep Dive
 
 ### HNSW (Hierarchical Navigable Small World)
+
+📄 Paper: [Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs](https://arxiv.org/abs/1603.09320)
 
 Nodes are inserted into a multilayer graph. Each node randomly gets assigned a maximum layer. Layer 0 has all nodes with many connections; higher layers have fewer nodes (exponentially fewer) with longer-range connections.
 
@@ -326,9 +329,11 @@ Nodes are inserted into a multilayer graph. Each node randomly gets assigned a m
 
 ### KD-Tree (K-Dimensional Tree)
 
+📄 Reference: [k-d tree (Wikipedia)](https://en.wikipedia.org/wiki/K-d_tree)
+
 Binary space partitioning. Each node splits space along one dimension (cycling through all dimensions). Search prunes entire subtrees when the closest possible point in that subtree can't beat the current best — the "ball within hyperslab" check.
 
-**Weakness:** Degrades with high dimensions (curse of dimensionality). Works well for ≤20D, becomes close to brute force at 768D.
+**Weakness:** Degrades with high dimensions ([curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality)). Works well for ≤20D, becomes close to brute force at 768D.
 
 ### Why HNSW Wins at High Dimensions
 
@@ -354,7 +359,7 @@ If llama3.2 is too slow on your laptop, switch to the 1B model:
 ollama pull llama3.2:1b
 ```
 
-Then edit [main.cpp](main.cpp) line where `genModel` is set:
+Then edit the line in [main.cpp](main.cpp) where `genModel` is set:
 ```cpp
 std::string genModel = "llama3.2:1b";   // change this
 ```
@@ -364,4 +369,4 @@ Recompile and restart.
 
 ## License
 
-MIT — use this however you want.
+MIT — use this however you want. See [LICENSE](LICENSE).
