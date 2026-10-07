@@ -22,7 +22,10 @@ class KDTree {
     int dims;
 
     void destroy(KDNode* n) {
-        if (!n) return; destroy(n->left); destroy(n->right); delete n;
+        if (!n) return;
+        destroy(n->left);
+        destroy(n->right);
+        delete n;
     }
 
     KDNode* ins(KDNode* n, const VectorItem& v, int d) {
