@@ -1,15 +1,17 @@
 # One command runs the whole stack: Ollama (embeddings + LLM) and the VectorDB server.
-#   docker compose up --build
-# Then open http://localhost:8080
-# The first start downloads the two models (~2.3 GB), so give it a few minutes.
+#   docker compose up -d --build
+# Then open http://localhost:8080 (or http://<server-ip>:8080 on a cloud VM).
+# The first start downloads the models (~2.3 GB with llama3.2), so give it a few minutes.
+#
+# Smaller/faster LLM for a small VM:  GEN_MODEL=llama3.2:1b docker compose up -d --build
 
 services:
   ollama:
     image: ollama/ollama:latest
     volumes:
       - ollama-models:/root/.ollama
-    ports:
-      - "11434:11434"
+    # No published port: only the VectorDB container talks to Ollama.
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "ollama", "list"]
       interval: 10s
@@ -26,7 +28,7 @@ services:
       - OLLAMA_HOST=ollama:11434
     volumes:
       - ollama-models:/root/.ollama
-    entrypoint: ["/bin/sh", "-c", "ollama pull nomic-embed-text && ollama pull llama3.2"]
+    entrypoint: ["/bin/sh", "-c", "ollama pull nomic-embed-text && ollama pull ${GEN_MODEL:-llama3.2}"]
     restart: "no"
 
   vectordb:
@@ -37,8 +39,10 @@ services:
     environment:
       - VECTORDB_OLLAMA_HOST=ollama
       - VECTORDB_OLLAMA_PORT=11434
+      - VECTORDB_GEN_MODEL=${GEN_MODEL:-llama3.2}
     ports:
       - "8080:8080"
+    restart: unless-stopped
 
 volumes:
   ollama-models:

@@ -477,6 +477,9 @@ int main() {
     const char* oh = std::getenv("VECTORDB_OLLAMA_HOST");
     const char* op = std::getenv("VECTORDB_OLLAMA_PORT");
     OllamaClient ollama(oh ? oh : "127.0.0.1", op ? std::atoi(op) : 11434);
+    // Optional model overrides, e.g. a smaller LLM on a small cloud VM
+    if (const char* em = std::getenv("VECTORDB_EMBED_MODEL")) ollama.embedModel = em;
+    if (const char* gm = std::getenv("VECTORDB_GEN_MODEL"))   ollama.genModel   = gm;
 
     loadDemo(db);
 
