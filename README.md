@@ -110,6 +110,7 @@ Ollama: ONLINE
 |---|---|---|
 | `VECTORDB_OLLAMA_HOST` | `127.0.0.1` | Host where Ollama runs |
 | `VECTORDB_OLLAMA_PORT` | `11434` | Ollama port |
+| `PORT` | `8080` | Port the server listens on (set automatically by hosts such as Render) |
 | `VECTORDB_EMBED_MODEL` | `nomic-embed-text` | Embedding model |
 | `VECTORDB_GEN_MODEL` | `llama3.2` | LLM used to answer (with Docker Compose, set `GEN_MODEL`) |
 
