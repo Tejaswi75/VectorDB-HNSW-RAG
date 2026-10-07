@@ -4,10 +4,7 @@ A vector database written from scratch in C++17, with three nearest-neighbour se
 
 **HNSW search is 10–20× faster than brute force at 100% recall** on 10,000 vectors (see [Benchmarks](#benchmarks)).
 
-<!--
-  Add a screenshot or GIF here once recorded, e.g.:
-  ![VectorDB web UI](docs/screenshots/search.png)
--->
+![VectorDB web UI: semantic search results, PCA scatter plot and algorithm comparison](docs/screenshots/ui.png)
 
 ## Features
 
@@ -156,6 +153,7 @@ VectorDB-HNSW-RAG/
 │   └── benchmark.cpp     Latency + recall benchmark
 ├── main.cpp              REST server, document DB, chunker, Ollama client
 ├── index.html            Web UI (PCA plot, search, RAG chat)
+├── docs/screenshots/     README images
 ├── httplib.h             cpp-httplib (MIT), single-header HTTP server
 ├── Dockerfile
 └── docker-compose.yml    Ollama + model download + server
