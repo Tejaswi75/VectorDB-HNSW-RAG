@@ -2,7 +2,7 @@
 
 A vector database written from scratch in C++17, with three nearest-neighbour search algorithms (**HNSW**, **KD-Tree**, **Brute Force**), a REST API, a web UI, and a fully local **RAG pipeline** powered by [Ollama](https://ollama.com).
 
-**HNSW search is ~12× faster than brute force at 99–100% recall** on 10K–50K vectors (see [Benchmarks](#benchmarks)).
+**HNSW search is 10–20× faster than brute force at 100% recall** on 10,000 vectors (see [Benchmarks](#benchmarks)).
 
 <!--
   Add a screenshot or GIF here once recorded, e.g.:
@@ -41,17 +41,16 @@ HNSW: M = 16, efConstruction = 200, efSearch = 50. Recall is measured against ex
 
 | Vectors | Dims | Brute Force (ms/query) | KD-Tree (ms/query) | HNSW (ms/query) | HNSW speedup | HNSW recall@10 |
 |---|---|---|---|---|---|---|
-| 10,000 | 16 | 0.74 | 0.11 | 0.11 | 6.6× | 100% |
-| 10,000 | 128 | 1.48 | 1.55 | 0.23 | 6.5× | 100% |
-| 10,000 | 768 | 6.72 | 6.79 | 0.53 | 12.7× | 100% |
-| 50,000 | 128 | 9.93 | 12.34 | 0.81 | 12.3× | 99.2% |
+| 10,000 | 16 | 0.53 | 0.04 | 0.05 | 11.4× | 100% |
+| 10,000 | 128 | 1.09 | 0.94 | 0.11 | 10.3× | 100% |
+| 10,000 | 768 | 6.67 | 7.68 | 0.33 | 20.4× | 100% |
 
-*Measured on a 2-core Intel Xeon @ 2.1 GHz. Your numbers will differ by machine; the ratios are what matter.*
+*Measured on a MacBook Air. Numbers vary by machine; the ratios are what matter. On a 50,000-vector, 128-D run (2-core Linux VM), HNSW kept 99.2% recall at 12× the speed of brute force.*
 
 **What the numbers show**
 
-- **KD-Tree is great in low dimensions** (6.6× faster than brute force at 16-D) but **collapses at 128-D and above**, becoming as slow as, or slower than, brute force: the curse of dimensionality in action.
-- **HNSW's advantage grows with data size and dimension**, reaching 12–13× at 768-D (the size of real text embeddings) and at 50K vectors.
+- **KD-Tree is great in low dimensions** (about 12× faster than brute force at 16-D) but **collapses as dimensions grow**: at 768-D it is slower than brute force. That is the curse of dimensionality in action.
+- **HNSW's advantage grows with dimension**, reaching 20× at 768-D, the size of real text embeddings.
 - **Neighbour selection matters.** The first version of the index linked each node to its *M* closest points only. On clustered data that split the graph into disconnected islands and recall was only **~64%**. Switching to the neighbour-selection heuristic from the HNSW paper (keep a candidate only if it is closer to the new node than to any already-chosen neighbour) preserves bridge edges between clusters and brought recall to **99–100%**.
 
 Reproduce:
