@@ -364,6 +364,7 @@ button {
       <div id="benchSec" style="display:none">
         <div class="sec">Algorithm Comparison</div>
         <div class="bench" id="benchBars"></div>
+        <div id="benchNote" style="font-size:10px;line-height:1.5;color:var(--muted);margin-top:8px"></div>
       </div>
       <div>
         <div class="sec">HNSW Graph Layers</div>
@@ -707,6 +708,10 @@ async function runBenchmark() {
       const pct=Math.max((us/mx)*100,2),disp=us<1000?us+' μs':(us/1000).toFixed(2)+' ms';
       return `<div class="brow"><div class="blabel"><span style="color:${col}">${lbl}</span><span style="color:var(--muted)">${disp}</span></div><div class="btrack"><div class="bfill" style="width:${pct}%;background:${col}"></div></div></div>`;
     }).join('');
+    // Index overhead dominates on tiny datasets; explain it so the bars aren't misread.
+    document.getElementById('benchNote').textContent = d.itemCount < 1000
+      ? `With only ${d.itemCount} vectors, brute force is often fastest: HNSW's graph overhead only pays off at scale. On 10,000 vectors at 768-D, HNSW is ~20× faster than brute force (see README benchmarks).`
+      : '';
   } catch(_) {}
 }
 
@@ -1009,7 +1014,7 @@ checkOllamaStatus();
 <footer style="
 position:fixed;
 bottom:12px;
-right:20px;
+right:380px;
 font-size:11px;
 color:#64748b;
 letter-spacing:1px;
